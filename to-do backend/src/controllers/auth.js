@@ -1,7 +1,9 @@
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 /* =========================
    REGISTER
@@ -134,7 +136,7 @@ const forgotPassword = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(200).json({
+      return res.json({
         message: "If account exists, reset link sent.",
       });
     }
@@ -150,33 +152,37 @@ const forgotPassword = async (req, res) => {
 
     const link = `${process.env.CLIENT_URL}/reset-password/${token}`;
 
-    const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
+    const response = await resend.emails.send({
+      from: "Todo App <onboarding@resend.dev>",
       to: user.email,
-      subject: "Reset Password",
+      subject: "Reset Your Password",
       html: `
         <h2>Password Reset</h2>
-        <p>Click link below:</p>
-        <a href="${link}">${link}</a>
-        <p>Valid for 15 minutes.</p>
+        <p>Click below to reset password:</p>
+
+        <a href="${link}"
+          style="
+            padding:12px 20px;
+            background:#6366f1;
+            color:white;
+            text-decoration:none;
+            border-radius:8px;
+            display:inline-block;
+          ">
+          Reset Password
+        </a>
+
+        <p>This link expires in 15 minutes.</p>
       `,
     });
 
+    console.log("EMAIL SENT:", response);
+
     return res.json({
-      message: "If account exists, reset link sent.",
+      message: "Reset link sent to your email.",
     });
   } catch (err) {
-    console.log(err);
+    console.log("FORGOT ERROR:", err);
 
     return res.status(500).json({
       message: "Server error",
