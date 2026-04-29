@@ -8,41 +8,55 @@ function ForgotPassword() {
 
   const submit = async (e) => {
     e.preventDefault();
-    setLoading(true);
 
-    const res = await fetch(
-      `${import.meta.env.VITE_API_TODO}/auth/forgot-password`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+    try {
+      setLoading(true);
+
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/auth/forgot-password`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
         },
-        body: JSON.stringify({ email }),
-      },
-    );
+      );
 
-    const data = await res.json();
-    alert(data.message);
-    setLoading(false);
+      const data = await res.json().catch(() => ({
+        message: "Server error",
+      }));
+
+      alert(data.message);
+    } catch (error) {
+      alert("Unable to connect to server");
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="auth-page">
       <div className="auth-box">
         <div className="auth-logo">📩</div>
+
         <h1>Forgot Password</h1>
+
         <p className="auth-subtitle">Enter your email to receive reset link</p>
 
         <form onSubmit={submit}>
           <input
             type="email"
+            id="email"
+            name="email"
             required
             placeholder="Enter email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
 
-          <button disabled={loading}>
+          <button type="submit" disabled={loading}>
             {loading ? "Sending..." : "Send Reset Link"}
           </button>
         </form>
