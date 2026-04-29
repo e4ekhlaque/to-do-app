@@ -13,13 +13,15 @@ function ForgotPassword() {
       setLoading(true);
 
       const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/auth/forgot-password`,
+        `${import.meta.env.VITE_API_TODO}/auth/forgot-password`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ email }),
+          body: JSON.stringify({
+            email: email.trim(),
+          }),
         },
       );
 
@@ -28,6 +30,11 @@ function ForgotPassword() {
       }));
 
       alert(data.message);
+      if (res.ok) {
+        alert(data.message);
+      } else {
+        alert(data.message || "Something went wrong");
+      }
     } catch (error) {
       alert("Unable to connect to server");
       console.log(error);
