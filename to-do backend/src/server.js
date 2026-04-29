@@ -10,21 +10,35 @@ const authRoutes = require("./routes/auth");
 const app = express();
 const PORT = process.env.PORT || 5003;
 
-// Middlewares
-app.use(cors());
+/* Middlewares */
+app.use(
+  cors({
+    origin: [
+      "https://to-do-app-tau-three-89.vercel.app",
+      "http://localhost:5173",
+    ],
+    credentials: true,
+  }),
+);
+
 app.use(express.json());
 
-// Routes
+/* Routes */
 app.use("/tasks", todoRoutes);
 app.use("/auth", authRoutes);
 
-// MongoDB Connection
+/* Health Check */
+app.get("/", (req, res) => {
+  res.send("API running successfully");
+});
+
+/* MongoDB */
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.log("MongoDB connection failed:", err.message));
 
-// Server Start
+/* Start Server */
 app.listen(PORT, () => {
-  console.log(`Server is running on : http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
