@@ -10,13 +10,16 @@ function ForgotPassword() {
     e.preventDefault();
     setLoading(true);
 
-    const res = await fetch(`${import.meta.env.API}/auth/forgot-password`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    const res = await fetch(
+      `${import.meta.env.VITE_API_TODO}/auth/forgot-password`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
       },
-      body: JSON.stringify({ email }),
-    });
+    );
 
     const data = await res.json();
     alert(data.message);

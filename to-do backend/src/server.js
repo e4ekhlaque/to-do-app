@@ -17,6 +17,7 @@ app.use(
       "https://to-do-app-tau-three-89.vercel.app",
       "http://localhost:5173",
     ],
+    methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   }),
 );
