@@ -12,7 +12,7 @@ function ResetPassword() {
     e.preventDefault();
 
     const res = await fetch(
-      `${import.meta.env.VITE_API_URL}/auth/reset-password/${token}`,
+      `${import.meta.env.API}/auth/reset-password/${token}`,
       {
         method: "POST",
         headers: {

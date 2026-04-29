@@ -10,7 +10,7 @@ function ForgotPassword() {
     e.preventDefault();
     setLoading(true);
 
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/forgot-password`, {
+    const res = await fetch(`${import.meta.env.API}/auth/forgot-password`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
